@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+    <link type="text/css" rel="stylesheet" href="reset.css"/>
+    <style type="text/css">
+        #cartTable{margin:30px auto; border-collapse: collapse;}
+        td,th{padding:5px 10px;}
+        .txtCnt{width:30px; margin:0px 5px;}
+        button{padding:5px;}
+        .total{font-size:18px; color:darkred; font-weight:800;}
+        .add img{ width: 20px; height: 20px; }
+        .cut img{ width: 20px; height: 20px; }
+        .cut{padding-left: 10px;}
+    </style>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="cart">
+    <table border="1" cellspacing="0" id="count" >
+        <thead>
+        <tr>
+            <th>商品序号</th>
+            <th>商品编号</th>
+            <th>商品名称</th>
+            <th>商品数量</th>
+            <th>商品单价</th>
+            <th>移出</th>
+            <th><input type="checkbox" v-model="output" @change="handleChange">全选</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item,index) in cart" :key="index">
+            <td>{{index+1}}</td>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>
+                <span class="cut" @click="cartCut(index)"><img src="img/cut.PNG"/> </span>
+                <span v-model="inputext">{{item.count}}</span>
+                <span class="add" @click="cartAdd(index)"><img src="img/add.PNG"/> </span>
+            </td>
+            <td>{{item.price}}</td>
+            <td><button @click="remove(index)" value="删除">删除</button></td>
+            <td><input type="checkbox" id="select" value="1" v-model="select"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr><!--购物车中有商品时显示-->
+            <td colspan="6">总价为：<span class="total"></span>{{inputext}}元</td>
+        </tr>
+
+        </tfoot>
+    </table>
+</div>
+<script>
+    new Vue({
+        el: '#cart',
+        data() {
+            return {
+                cart:[
+                    {id:'0001',name:'iphoneX',count:1,price:6188},
+                    {id:'0002',name:'华为p30',count:2,price:5934},
+                    {id:'0003',name:'小米RedmiBook',count:1,price:4299},
+                    {id:'0004',name:'华为畅享9e',count:3,price:799}
+                ],
+                count: 0,
+                inputext:'',
+                output:false,
+                select:[]
+            }
+        },
+        computed:{
+            theSelect(){
+                var h=0;
+                this.select.forEach(function (item) {
+                    h+=parseInt(item);
+                });
+                return h;
+            }
+        } ,
+        watch:{
+            theSelect(){
+                if (this.theSelect==1)
+                    this.output=true;
+                else
+                    this.output=false;
+            }
+        },
+        methods:{
+            cartAdd (index) {
+                this.cart[index].count ++;
+                this.count();
+            },
+            cartCut (index) {
+                if (this.cart[index].count >0) {
+                    this.cart[index].count --
+                }
+            },
+            remove(index){
+                this.cart.splice(index,1);
+                this.count();
+            },
+            handleChange(){
+                if (this.output)
+                    this.select=[1];
+                else
+                    this.select=[]
+            }
+        }
+    })
+</script>
+</body>
+</html>
